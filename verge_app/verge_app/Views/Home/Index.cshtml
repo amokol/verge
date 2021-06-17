@@ -1,0 +1,86 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<script>
+    $(document).ready(function () {
+        var searchtitle = "";
+        $("#btnSearch").click(function (e) {
+            searchtitle = $("#txtTitle").val();
+            getArticles();
+        });
+
+        function getArticles() {
+            $("#divContent").empty();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("getArticles")',
+                data: "{searchtitle: '" + searchtitle + "'}",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                   LoadData(data);
+                },
+                error: function () {
+                    alert("Error while inserting data");
+                }
+            });
+        }
+
+        function LoadData(data) {
+            var jsonData = JSON.parse(JSON.stringify(data));
+            $.each(jsonData, function (index) {
+                var div_data = '<a href="' + jsonData[index].article_link + '" target="_blank">';
+                div_data += '<div class="col-lg-4 col-xs-12"><div class="row div-main-article">';
+                div_data += '<div class="col-lg-6 col-xs-12 div-texts div-main-article">';
+                div_data += '<img src = "' + jsonData[index].article_img_src+'" >';
+                div_data += '</div>';
+                div_data += '<div class="col-lg-6 col-xs-12 div-texts div-articles-height">' + jsonData[index].article_title+'</div>';
+                div_data += '<div class="col-lg-3 col-xs-12 div-texts div-articles-height">' + jsonData[index].article_author+'</div>';
+                div_data += '<div class="col-lg-3 col-xs-12 div-texts div-articles-height">' + jsonData[index].article_publish_date + '</div>';
+                if ($(window).width() > 768) {
+                    div_data += '<div class="col-lg-6 col-xs-12 div-texts div-articles-height">' + jsonData[index].article_summary.substring(0, 60)  + '...</div>';
+                }
+                div_data += '</div></div></a>';
+                $("#divContent").append(div_data);
+            });
+        }
+        getArticles();
+    });
+</script>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="input-group">
+            <span class="input-group-btn">
+                <button class="btn btn-default" id="btnSearch" type="button">Search</button>
+            </span>
+            <input type="text" id="txtTitle" class="form-control" placeholder="Enter Title">
+        </div>
+    </div>
+</div>
+<div id="divContent" class="row">
+    <a href="https://www.theverge.com/2021/6/17/22538066/leica-leitz-phone-1-softbank-sharp-japan-price" target="_blank">
+        <div class="col-lg-4 col-xs-12">
+            <div class="row">
+                <div class="col-lg-6 col-xs-12">
+                    <img src="https://cdn.vox-cdn.com/thumbor/5NdPkSgYBMVwdhuyKBsPF7wB8dU=/166x0:1711x1030/1310x873/cdn.vox-cdn.com/uploads/chorus_image/image/69464656/Screen_Shot_2021_06_16_at_9.24.58_PM.0.png">
+                </div>
+                <div class="col-lg-6 col-xs-12">
+                    <div class="row">
+                        <div class="col-lg-12 col-xs-12">
+                            content 1
+                        </div>
+                        <div class="col-lg-6 col-xs-12">
+                            content 2
+                        </div>
+                        <div class="col-lg-6 col-xs-12">
+                            content 3
+                        </div>
+                        <div class="col-lg-12 col-xs-12">
+                            content 4
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+</div>
